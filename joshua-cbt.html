@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Book of Joshua CBT</title>
+<style>
+:root{--bg:#faf7f0;--card:#fff;--tx:#2a2118;--mu:#7a6e5f;--ac:#8a5a14;--ok:#1f7a3d;--no:#b3261e;--bd:#e4dccb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1712;--card:#262019;--tx:#f1e9da;--mu:#a99c88;--ac:#e0a458;--ok:#5fc47f;--no:#ff8a80;--bd:#3a3226}}
+:root[data-theme="dark"]{--bg:#1b1712;--card:#262019;--tx:#f1e9da;--mu:#a99c88;--ac:#e0a458;--ok:#5fc47f;--no:#ff8a80;--bd:#3a3226}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px;margin-bottom:14px}
+h1{font:700 1.7rem Georgia,serif;margin:.2em 0}
+.mu{color:var(--mu)}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:10px 16px}
+button.p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+button:disabled{opacity:.4;cursor:default}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;justify-content:space-between;align-items:center;background:var(--bg);padding:10px 0;border-bottom:1px solid var(--bd);margin-bottom:12px}
+.t{font:700 1.3rem ui-monospace,monospace}.t.low{color:var(--no)}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px}
+.opt.sel{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 15%,var(--card));font-weight:600}
+.pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px}
+.pal button{padding:6px 0;font-size:.85rem}
+.pal .done{background:var(--ac);color:#fff;border-color:var(--ac)}
+.pal .cur{outline:2px solid var(--tx)}
+.row{display:flex;gap:10px;justify-content:space-between;margin-top:14px}
+.sc{font:700 3rem Georgia,serif;text-align:center;margin:.1em 0}
+.rv{border-left:5px solid var(--bd)}.rv.ok{border-color:var(--ok)}.rv.no{border-color:var(--no)}
+.a{padding:3px 0}.a.c{color:var(--ok);font-weight:700}.a.w{color:var(--no);font-weight:700}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="w" id="app"></div>
+<script>
+// ===== CONFIG =====
+var DURATION_MIN = 60;      // change to 30 for a 30-minute exam
+var PER_SESSION = 70;       // questions per session
+// Question bank: [question, correct answer, wrong1, wrong2, wrong3]. Add more any time.
+var BANK = [
+["Who succeeded Moses as leader of Israel?","Joshua","Caleb","Eleazar","Phinehas"],
+["Joshua was the son of which man?","Nun","Eli","Amram","Hur"],
+["Which river did Israel cross to enter Canaan?","Jordan","Euphrates","Nile","Arnon"],
+["Who hid the two spies in Jericho?","Rahab","Deborah","Jael","Achsah"],
+["What did Rahab tie in her window as a sign?","A scarlet cord","A white cloth","A blue rope","A lamp"],
+["Where was Rahab's house located?","On the city wall","By the river","In the valley","Inside the temple"],
+["How many spies did Joshua send secretly to Jericho?","Two","Twelve","Ten","Three"],
+["Who carried the ark of the covenant into the Jordan?","The priests","The elders","The judges","The tribe of Reuben"],
+["How many stones were taken from the Jordan as a memorial?","Twelve","Seven","Ten","Forty"],
+["Where did Israel camp after crossing the Jordan?","Gilgal","Shiloh","Bethel","Shechem"],
+["What happened to the manna once Israel ate the produce of Canaan?","It stopped","It doubled","It turned bitter","It continued for a year"],
+["Where did Rahab hide the spies?","Under stalks of flax on the roof","In a cellar","In a well","In the city gate"],
+["How many days did the spies hide in the hills?","Three","Seven","Two","Forty"],
+["What did the Lord's commander hold when he appeared to Joshua near Jericho?","A drawn sword","A bow","A staff","A scroll"],
+["What was Joshua told to do at the place where the commander appeared?","Take off his sandals","Offer a sacrifice","Build an altar","Blow a trumpet"],
+["How many times did Israel march around Jericho on the seventh day?","Seven","Six","Twelve","Three"],
+["How many priests blew trumpets in front of the ark at Jericho?","Seven","Twelve","Ten","Three"],
+["Whose family was spared when Jericho fell?","Rahab's","Caleb's","Achan's","Phinehas'"],
+["Who took devoted things from Jericho and brought trouble on Israel?","Achan","Korah","Nadab","Abiram"],
+["Achan was the son of whom?","Carmi","Nun","Hur","Eli"],
+["Which city defeated Israel at first after Jericho?","Ai","Gibeon","Hazor","Makkedah"],
+["Which garment did Achan take from Jericho?","A beautiful robe from Shinar","A purple cloak","A priestly ephod","A linen belt"],
+["Where was Achan stoned?","Valley of Achor","Valley of Aijalon","Valley of Elah","Valley of Hinnom"],
+["Which two mountains were used for reading the blessings and curses?","Ebal and Gerizim","Sinai and Horeb","Tabor and Hermon","Carmel and Nebo"],
+["On which mountain did Joshua build an altar to the Lord?","Mount Ebal","Mount Sinai","Mount Carmel","Mount Tabor"],
+["What did Joshua hold out toward Ai at the Lord's command?","His javelin","His staff","His sword","The ark"],
+["What was done to the king of Ai?","He was hanged on a tree","He fled to Hazor","He was spared","He was exiled"],
+["Which people deceived Joshua with worn sacks and moldy bread?","The Gibeonites","The Amorites","The Hivites of Tyre","The Jebusites"],
+["What did the Gibeonites become for Israel?","Woodcutters and water carriers","Soldiers","Priests","Farmers of Gilgal"],
+["How many Amorite kings attacked Gibeon?","Five","Seven","Three","Thirty-one"],
+["What did the Lord throw down on the enemy at Beth Horon?","Large hailstones","Fire","Locusts","Darkness"],
+["Over which place did Joshua command the sun to stand still?","Gibeon","Jericho","Hebron","Gilgal"],
+["Over which valley did the moon stand still?","Aijalon","Achor","Jezreel","Elah"],
+["In which place did the five kings hide?","A cave at Makkedah","A tower in Ai","The city of Hazor","The hills of Gilead"],
+["Which book is cited as recording the sun standing still?","The Book of Jashar","The Book of the Wars of the Lord","The Book of Samuel","The Book of Enoch"],
+["Who led the northern coalition against Israel?","Jabin king of Hazor","Adoni-Zedek","Og king of Bashan","Sihon"],
+["At which waters did Israel defeat the northern kings?","Waters of Merom","Waters of Marah","Waters of Meribah","Waters of Nimrim"],
+["Which northern city did Joshua burn?","Hazor","Ai","Hebron","Debir"],
+["How many kings did Joshua defeat west of the Jordan?","Thirty-one","Twelve","Seven","Fifty"],
+["Who asked Joshua for the hill country of Hebron?","Caleb","Othniel","Eleazar","Phinehas"],
+["How old was Caleb when he asked for Hebron?","Eighty-five","Seventy","Ninety","Sixty-five"],
+["Caleb was the son of whom?","Jephunneh","Nun","Kenaz","Hezron"],
+["Hebron was formerly called what?","Kiriath Arba","Kiriath Sepher","Shiloh","Debir"],
+["Who captured Kiriath Sepher and married Caleb's daughter Achsah?","Othniel","Joshua","Phinehas","Eleazar"],
+["What did Achsah ask her father for?","Springs of water","A vineyard","Sheep","Gold"],
+["How was the land west of the Jordan mostly distributed?","By casting lots","By age of the tribes","By Joshua's choice alone","By purchase"],
+["Which tribe received no land inheritance but towns to live in?","Levi","Dan","Simeon","Benjamin"],
+["Where was the tent of meeting set up?","Shiloh","Gilgal","Bethel","Hebron"],
+["How many cities of refuge were designated?","Six","Three","Twelve","Forty-eight"],
+["Who could flee to a city of refuge?","Someone who killed unintentionally","Any debtor","A foreigner","A runaway servant"],
+["How many towns in total were given to the Levites?","Forty-eight","Twelve","Six","Seventy"],
+["What did the eastern tribes build beside the Jordan?","A large altar","A watchtower","A temple","A wall"],
+["Phinehas the priest was the son of whom?","Eleazar","Aaron's brother Moses","Eli","Nun"],
+["How old was Joshua when he died?","110","120","100","95"],
+["Where was Joshua buried?","Timnath Serah","Shechem","Hebron","Gilgal"],
+["Where were the bones of Joseph buried?","Shechem","Bethel","Hebron","Shiloh"],
+["Where was Eleazar son of Aaron buried?","Gibeah of Phinehas","Hebron","Shiloh","Mount Nebo"],
+["At which place did Joshua say 'As for me and my house, we will serve the Lord'?","Shechem","Gilgal","Shiloh","Jericho"],
+["Who told Joshua to 'be strong and courageous'?","The Lord","Moses","Caleb","The priests"],
+["What was Joshua told to do with the Book of the Law?","Meditate on it day and night","Hide it in the ark","Read it once a year","Copy it on a wall"],
+["What did the officers tell the people to prepare before crossing the Jordan?","Provisions","Weapons only","Sacrifices","Tents"],
+["How many days later were the people to cross the Jordan after the officers' command?","Three days","Seven days","One day","Forty days"],
+["How far from the ark were the people told to stay while crossing?","About 2,000 cubits","About 100 cubits","About a mile","About 50 cubits"],
+["At what season was the Jordan at flood stage?","Harvest","Winter","Planting","Midsummer"],
+["Near which town did the Jordan's waters pile up?","Adam","Jericho","Gilgal","Shittim"],
+["Where was the generation born in the wilderness circumcised?","Gibeath Haaraloth","Shiloh","Shechem","Hebron"],
+["Where did Israel celebrate the Passover after crossing the Jordan?","Gilgal","Shiloh","Ai","Hebron"],
+["Which people did the Gibeonites belong to?","Hivites","Perizzites","Jebusites","Hittites"],
+["What curse did Joshua place on the rebuilder of Jericho?","Loss of his firstborn son","Loss of all his flocks","Exile","Leprosy"],
+["Who did the people say they would serve in Joshua's final address?","The Lord","Baal","The gods beyond the River","The Amorite gods"],
+["What did Joshua set up at Shechem as a witness against the people?","A large stone under the oak","A bronze altar","A gold calf","A tent"],
+["Which tribe was identified first by lot when Achan was found out?","Judah","Reuben","Ephraim","Levi"],
+["Which tribes were commanded to cross armed ahead of Israel?","Reuben, Gad and half of Manasseh","Judah, Dan and Levi","Ephraim and Benjamin","Simeon, Levi and Issachar"],
+["What was Rahab's profession as described in Joshua?","Prostitute","Shepherd","Weaver","Innkeeper"]
+];
+// ===================
+
+var app=document.getElementById('app'),S={};
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function fmt(s){var m=Math.floor(s/60),x=s%60;return (m<10?'0':'')+m+':'+(x<10?'0':'')+x}
+
+function home(){
+  var n=Math.min(PER_SESSION,BANK.length);
+  app.innerHTML='<div class="card"><h1>Book of Joshua CBT</h1><p class="mu">Test your knowledge of the Book of Joshua.</p>'+
+  '<p><b>'+n+'</b> questions &middot; <b>'+DURATION_MIN+' minutes</b> &middot; auto-submits when time runs out.</p>'+
+  '<p><input id="nm" placeholder="Your name (optional)" style="font:inherit;padding:10px;width:100%;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)"></p>'+
+  '<button class="p" id="go">Start exam</button></div>';
+  document.getElementById('go').onclick=function(){start(document.getElementById('nm').value.trim())};
+}
+
+function start(name){
+  var qs=shuf(BANK).slice(0,PER_SESSION).map(function(r){return{q:r[0],c:r[1],o:shuf(r.slice(1)),a:null}});
+  S={name:name,qs:qs,i:0,left:DURATION_MIN*60,done:false};
+  S.tm=setInterval(function(){S.left--;var t=document.getElementById('tm');if(t){t.textContent=fmt(S.left);t.className='t'+(S.left<=300?' low':'')}if(S.left<=0)finish(true)},1000);
+  render();
+}
+
+function render(){
+  var q=S.qs[S.i],ans=S.qs.filter(function(x){return x.a!==null}).length;
+  var h='<div class="bar"><div><b>Q '+(S.i+1)+'</b> / '+S.qs.length+' <span class="mu">&middot; answered '+ans+'</span></div><div id="tm" class="t'+(S.left<=300?' low':'')+'">'+fmt(S.left)+'</div></div>';
+  h+='<div class="card"><p style="font-size:1.1rem;margin-top:0">'+esc(q.q)+'</p>';
+  q.o.forEach(function(o,k){h+='<button class="opt'+(q.a===o?' sel':'')+'" data-k="'+k+'">'+String.fromCharCode(65+k)+'. '+esc(o)+'</button>'});
+  h+='<div class="row"><button id="pv"'+(S.i===0?' disabled':'')+'>&larr; Prev</button>'+
+     (S.i<S.qs.length-1?'<button class="p" id="nx">Next &rarr;</button>':'<button class="p" id="sb">Submit</button>')+'</div></div>';
+  h+='<div class="card"><div class="pal">';
+  S.qs.forEach(function(x,k){h+='<button data-p="'+k+'" class="'+(x.a!==null?'done ':'')+(k===S.i?'cur':'')+'">'+(k+1)+'</button>'});
+  h+='</div><div class="row"><span class="mu">Tap a number to jump.</span><button id="sb2">Submit exam</button></div></div>';
+  app.innerHTML=h;
+  app.querySelectorAll('.opt').forEach(function(b){b.onclick=function(){q.a=q.o[+b.dataset.k];render()}});
+  app.querySelectorAll('[data-p]').forEach(function(b){b.onclick=function(){S.i=+b.dataset.p;render()}});
+  var pv=document.getElementById('pv'),nx=document.getElementById('nx'),sb=document.getElementById('sb'),sb2=document.getElementById('sb2');
+  pv.onclick=function(){S.i--;render()};
+  if(nx)nx.onclick=function(){S.i++;render()};
+  function ask(){var un=S.qs.length-S.qs.filter(function(x){return x.a!==null}).length;if(confirm(un?('You have '+un+' unanswered question(s). Submit anyway?'):'Submit your exam now?'))finish(false)}
+  if(sb)sb.onclick=ask;sb2.onclick=ask;
+}
+
+function finish(auto){
+  if(S.done)return;S.done=true;clearInterval(S.tm);
+  var sc=S.qs.filter(function(x){return x.a===x.c}).length,tot=S.qs.length,pc=Math.round(sc/tot*100);
+  var h='<div class="card"><p class="mu" style="text-align:center;margin:0">'+(auto?'Time is up &mdash; exam auto-submitted.':'Exam submitted.')+(S.name?' '+esc(S.name):'')+'</p>'+
+  '<div class="sc">'+sc+' / '+tot+'</div><p style="text-align:center;margin:0" class="mu">'+pc+'% &middot; '+(pc>=70?'Excellent work!':pc>=50?'Good effort, review the misses below.':'Keep studying and try again.')+'</p>'+
+  '<div class="row" style="justify-content:center"><button class="p" id="re">Take another session</button></div></div><h2>Review</h2>';
+  S.qs.forEach(function(x,k){
+    var ok=x.a===x.c;
+    h+='<div class="card rv '+(ok?'ok':'no')+'"><b>'+(k+1)+'. '+esc(x.q)+'</b>';
+    x.o.forEach(function(o,j){
+      var cls=o===x.c?'c':(o===x.a?'w':'');
+      var tag=o===x.c?' &#10003; correct':(o===x.a?' &#10007; your answer':'');
+      h+='<div class="a '+cls+'">'+String.fromCharCode(65+j)+'. '+esc(o)+tag+'</div>';
+    });
+    if(x.a===null)h+='<div class="mu">Not answered</div>';
+    h+='</div>';
+  });
+  app.innerHTML=h;window.scrollTo(0,0);
+  document.getElementById('re').onclick=home;
+}
+home();
+</script>
+</body>
+</html>
