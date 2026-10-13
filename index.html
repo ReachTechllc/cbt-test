@@ -125,7 +125,7 @@ function fmt(s){var m=Math.floor(s/60),x=s%60;return (m<10?'0':'')+m+':'+(x<10?'
 
 function home(){
   var n=Math.min(PER_SESSION,BANK.length);
-  app.innerHTML='<div class="card"><h1>Book of Joshua CBT</h1><p class="mu">Test your knowledge of the Book of Joshua.</p>'+
+  app.innerHTML='<div class="card"><h1>Book of Joshua CBT from Reach Technology LLC</h1><p class="mu">Test your knowledge of the Book of Joshua.</p>'+
   '<p><b>'+n+'</b> questions &middot; <b>'+DURATION_MIN+' minutes</b> &middot; auto-submits when time runs out.</p>'+
   '<p><input id="nm" placeholder="Your name (optional)" style="font:inherit;padding:10px;width:100%;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)"></p>'+
   '<button class="p" id="go">Start exam</button></div>';
